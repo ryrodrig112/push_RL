@@ -16,9 +16,6 @@ for color in colors:
 
 assert len(numbered_cards) == 90
 
-active_card = push.Card("Green", '1')
-pile_1 = push.Pile([push.Card("Red", "1"), push.Card("Blue", "2")])
-pile_1.show()
-
-pile_1.check_availability(active_card)
-pile_1.show_availability(active_card)
+dice = push.Dice(colors + ["Safe"])
+for i in range(50):
+    dice.roll()

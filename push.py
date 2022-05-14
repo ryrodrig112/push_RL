@@ -74,8 +74,21 @@ class Pile(Stack):
 
 
 class Dice:
-    pass
+    def __init__(self, sides):
+        self.sides = sides
+    def roll(self):
+        side = random.choice(self.sides)
+        print(side)
+        return side
+
+
+class Players():
+    def __init__(self, players, order):
+        self.players = players
+        self.order = order
 
 
 class Player:
-    pass
+    def __init__(self, strategy, points):
+        self.strategy = strategy
+        self.points = points
