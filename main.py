@@ -1,5 +1,5 @@
 import components
-import players
+import game
 import strategies
 
 print("Hello World")
@@ -43,10 +43,10 @@ pile_3 = components.Pile([])
 player_list = []
 for player in range(num_players):
     name = "Player {}".format(player)
-    player = players.Player(name)
+    player = game.Player(name)
     player_list.append(player)
 
-test_game = players.PushGame(player_list, deck)
+test_game = game.PushGame(player_list, deck)
 test_game.play()
 
 
