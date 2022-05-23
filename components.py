@@ -62,6 +62,7 @@ class Pile(Stack):
                     self.available = False
                 elif active_card.number == played_card.number:
                     self.available = False
+        return self.available
 
     def show_availability(self, active_card):
         if self.available == True:

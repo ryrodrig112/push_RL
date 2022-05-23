@@ -46,12 +46,14 @@ for player in range(num_players):
     player = game.Player(name)
     player_list.append(player)
 
-test_game = game.PushGame(player_list, deck)
-test_game.play()
-# print(test_game.active_card, test_game.deck.count_cards())
+Push = game.PushGame(player_list, deck)
+Push.play()
+# print(Push.active_card, Push.deck.count_cards())
 #
-# test_game.active_card = test_game.deck.draw()
-# print(test_game.active_card, test_game.deck.count_cards())
+# Push.active_card = Push.deck.draw()
+# print(Push.active_card, Push.deck.count_cards())
+# for pile in Push.piles:
+#     pile.check_availability(Push.active_card)
 
 
 

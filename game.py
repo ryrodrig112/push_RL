@@ -2,7 +2,7 @@ import random
 import components
 
 
-class Player():
+class Player:
     """Class for one player in the Push game"""
 
     def __init__(self, name):
@@ -17,15 +17,13 @@ class Player():
         self.score = 0
 
     # Begin turn taking methods - likely will end up as sub-functions within a method
-    @staticmethod
-    def choose_pile(active_card, available_piles):
+    def choose_pile(self, active_card, available_piles):
         """ Given an active card and set of piles to play to, randomly place the card in a pile"""
         if available_piles:
             selection = random.choice(available_piles)
-            PushGame.piles[selection].add_card_to_stack(active_card)
-            print(selection)
+            return selection
         else:
-            print('Push')  # Come back to this
+            return 'Push'  # This needs to be implemented
 
     def draw_or_pass(self):
         """ Randomly decide whether or not to continue drawing or to pass"""
@@ -72,9 +70,8 @@ class PushGame:
     def identify_playable_piles(self):
         self.available_piles = []
         for pile_index in range(len(self.piles)):
-            check = self.piles[pile_index].check_availability(self.active_card)
-            if check:
-                self.available_piles.append(check)
+            if self.piles[pile_index].check_availability(self.active_card):
+                self.available_piles.append(pile_index)
 
     def win(self):
         """Return the player(s) with the highest score in the game"""
@@ -83,22 +80,32 @@ class PushGame:
         winners = [player for player, score in score_dictionary.items() if score == top_score]
         self.winners = winners
 
+    def reset(self, player):
+        player.reset()
+        self.piles = self.piles = [components.Pile([]), components.Pile([]), components.Pile([])]
+        self.available_piles = [0, 1, 2]
+
     def play(self):
         """Play the game"""
         self.running = True
-        while self.running:
-            for player in self.players:  # For each player in the game...
+        while self.running:  # While in running state...
+            for player in self.players:  # ...players each take their turn...
                 if self.running:
-                    player.reset()  # Make sure that player will draw at least one card this turn
-                    print(player, self.deck.count_cards(), player.drawing, self.running)
-                    while player.drawing:  # ... draw and place cards until you decide to stop...
-                        if self.deck.count_cards() > 0:  # While there are cards remaining in the deck, players take
-                            # turns
+                    self.reset(player)  # ... beginning by drawing at least one card onto the empty piles.
+                    while player.drawing: # On their turn a player will draw cards
+                        if self.deck.count_cards() > 0:  # assuming there are cards left
                             self.active_card = self.deck.draw()
                             self.identify_playable_piles()
-                            player.choose_pile(self.active_card, self.available_piles)
-                            player.draw_or_pass()
-                        elif self.deck.count_cards() == 0:
+                            selection = player.choose_pile(self.active_card, self.available_piles) # select a
+                            # location for the drawn card
+                            if selection == "Push":
+                                pass
+                            else:
+                                self.piles[selection].add_card_to_stack(self.active_card)  # and then place it
+                            player.draw_or_pass()  # ... until the player decides not to draw anymore and ends their
+                            # turn.
+                            print(player.name, self.active_card, self.available_piles, selection)
+                        elif self.deck.count_cards() == 0:  # The game ends once the deck is empty
                             self.running = False
                             player.drawing = False
                             print('The game is over, there are no more cards')
