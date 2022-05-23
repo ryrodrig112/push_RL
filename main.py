@@ -43,17 +43,13 @@ pile_3 = components.Pile([])
 player_list = []
 for player in range(num_players):
     name = "Player {}".format(player)
-    player = players.Player(name, strategies.random, None, None)
+    player = players.Player(name)
     player_list.append(player)
-group = players.Players(player_list, 1)
 
-#play the game until there are no more cards in deck
-# while len(deck.card_stack) > 0:
-#     pass
-#     #play the game
+test_game = players.PushGame(player_list, deck)
+test_game.play()
 
-print(group)
-#
+
 
 
 
