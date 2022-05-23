@@ -23,12 +23,12 @@ for color in colors:
         for i in range(copies_of_number):
             card = components.Card(color, number)
             numbered_cards.append(card)
-for bomb in range(num_bombs):
-    card = components.Card("Bomb", "Bomb")
-    bomb_list.append(card)
-for reverse in range(num_reverse):
-    card = components.Card("Reverse", "Reverse")
-    reverse_list.append(card)
+# for bomb in range(num_bombs):
+#     card = components.Card("Bomb", "Bomb")
+#     bomb_list.append(card)
+# for reverse in range(num_reverse):
+#     card = components.Card("Reverse", "Reverse")
+#     reverse_list.append(card)
 
 # instantiate deck
 deck = components.Deck(numbered_cards + bomb_list + reverse_list)
@@ -48,6 +48,10 @@ for player in range(num_players):
 
 test_game = game.PushGame(player_list, deck)
 test_game.play()
+# print(test_game.active_card, test_game.deck.count_cards())
+#
+# test_game.active_card = test_game.deck.draw()
+# print(test_game.active_card, test_game.deck.count_cards())
 
 
 

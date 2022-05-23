@@ -23,7 +23,7 @@ class Stack:
             print(card)
 
     def count_cards(self):
-        return "There are {num_cards} in this stack.".format(num_cards=len(self.card_stack))
+        return len(self.card_stack)
 
     def check_card_types(self):
         card_tracker = {}
@@ -56,12 +56,12 @@ class Pile(Stack):
 
     def check_availability(self, active_card):
         self.available = True
-        for played_card in self.card_stack:
-            if active_card.color == played_card.color:
-                self.available = False
-            elif active_card.number == played_card.number:
-                self.available = False
-
+        if self.card_stack:  # Check the cards if there are cards to be checked
+            for played_card in self.card_stack:
+                if active_card.color == played_card.color:
+                    self.available = False
+                elif active_card.number == played_card.number:
+                    self.available = False
 
     def show_availability(self, active_card):
         if self.available == True:
@@ -76,6 +76,7 @@ class Pile(Stack):
 class Dice:
     def __init__(self, sides):
         self.sides = sides
+
     def roll(self):
         side = random.choice(self.sides)
         print(side)
