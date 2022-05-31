@@ -80,5 +80,4 @@ class Dice:
 
     def roll(self):
         side = random.choice(self.sides)
-        print(side)
         return side
