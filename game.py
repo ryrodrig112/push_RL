@@ -70,13 +70,13 @@ class Player:
 
     def collect_card_pile(self, game):
         """ Collect a pile from the center and add cards (excluding bombs and reverse) to unbanked"""
-        selection = random.choice(game.piles)
+        selection = random.choice(game.piles_for_collection)
         for card in selection.card_stack:
             if card.color in game.colors:  # don't add bombs or reverse
                 self.unbanked_cards[card.color].append(card.number)
             elif card.color == "Bomb":
                 self.push(game)
-        game.piles.remove(selection)
+        game.piles_for_collection.remove(selection)
         return selection
 
     def update_score(self):
@@ -170,12 +170,15 @@ class PushGame:
 
     def players_collect_piles(self, player):
         self.get_players_to_collect(player)
+        self.check_piles_for_collection()
         for j in self.players_to_collect:
-            player_to_collect = self.players[j]
-            self.check_piles_for_collection()
-            collection = player_to_collect.collect_card_pile(self)
-            player_to_collect.update_score()
-            print(f"{player_to_collect.name} collects pile {collection}")
+            if self.piles_for_collection:
+                print(self.piles_for_collection)
+                player_to_collect = self.players[j]
+                collection = player_to_collect.collect_card_pile(self)
+                player_to_collect.update_score()
+                print(f"{player_to_collect.name} collects pile {collection}")
+                print(player_to_collect)
 
     def play(self):
         """Play the game"""
