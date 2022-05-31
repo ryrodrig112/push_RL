@@ -35,6 +35,27 @@ class Player:
             self.pushed = True
             return None
 
+    def bank_or_draw(self):
+        """If there is a pile to be banked, decide whether or not to bank piles"""
+        self.drawing = True
+        cards_to_bank = False
+        for color in self.unbanked_cards:
+            if self.unbanked_cards[color]:
+                cards_to_bank = True
+        if cards_to_bank:
+            self.drawing = random.choice([True, False])
+
+    def bank_cards(self):
+        """Randomly choose from nonempty piles to bank"""
+        piles_to_bank = []
+        for color in self.unbanked_cards:
+            if self.unbanked_cards[color]:
+                piles_to_bank.append(color)
+        color_to_bank = random.choice(piles_to_bank)
+        self.banked_cards[color_to_bank].extend(self.unbanked_cards[color_to_bank])
+        self.unbanked_cards[color_to_bank] = []
+        print("{} banks {}".format(self.name, color_to_bank))
+
     def draw_or_pass(self):
         """ Randomly decide whether or not to continue drawing or to pass"""
         self.drawing = random.choice([True, False])
@@ -155,7 +176,6 @@ class PushGame:
             collection = player_to_collect.collect_card_pile(self)
             player_to_collect.update_score()
             print(f"{player_to_collect.name} collects pile {collection}")
-            print(player_to_collect)
 
     def play(self):
         """Play the game"""
@@ -168,30 +188,34 @@ class PushGame:
                 self.reset(player)  # ... beginning by drawing at least one card onto the empty piles.
                 while player.drawing:  # On their turn a player will draw cards
                     if self.deck.count_cards() > 0:  # assuming there are cards left
-                        self.active_card = self.deck.draw()
-                        print(f"{player.name} draws a {self.active_card}")
-                        if self.active_card.color == "Reverse":
-                            self.switch_play_direction()
+                        player.bank_or_draw()
+                        if not player.drawing:
+                            player.bank_cards()
                         else:
-                            self.identify_playable_piles()
-                            selection = player.select_pile_for_card(self.available_piles)  # select a
-                            # location for the drawn card
-                            if player.pushed:
-                                player.drawing = False
-                                player.push(self)
+                            self.active_card = self.deck.draw()
+                            print(f"{player.name} draws a {self.active_card}")
+                            if self.active_card.color == "Reverse":
+                                self.switch_play_direction()
                             else:
-                                self.piles[selection].add_card_to_stack(self.active_card)  # and then place it
-                                player.draw_or_pass()  # ... until the player decides not to draw anymore and ends
-                                # their turn.
+                                self.identify_playable_piles()
+                                selection = player.select_pile_for_card(self.available_piles)  # select a
+                                # location for the drawn card
+                                if player.pushed:
+                                    player.drawing = False
+                                    player.push(self)
+                                else:
+                                    self.piles[selection].add_card_to_stack(self.active_card)  # and then place it
+                                    player.draw_or_pass()  # ... until the player decides not to draw anymore and ends
+                                    # their turn.
 
-                            print(f"Its placed in pile {selection}, ({self.available_piles} were available)")
-                            print(f"{self.deck.count_cards()} cards remain")
-                        if not player.drawing:  # once the player is done drawing, they pick a pile and update
-                            # their score
-                            self.players_collect_piles(player)
-                            print("")
-                            if self.deck.count_cards() == 0:
-                                self.running = False
+                                print(f"Its placed in pile {selection}, ({self.available_piles} were available)")
+                                print(f"{self.deck.count_cards()} cards remain")
+                            if not player.drawing:  # once the player is done drawing, they pick a pile and update
+                                # their score
+                                self.players_collect_piles(player)
+                                print("")
+                                if self.deck.count_cards() == 0:
+                                    self.running = False
                     elif self.deck.count_cards() == 0:  # The game ends once the deck is empty
                         self.running = False
                         player.drawing = False
